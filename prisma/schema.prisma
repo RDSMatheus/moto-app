@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator customClient {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantPlan {
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  email     String   @unique
+  password  String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  address   String
+  tenantId  String?
+  cpfCnpj   String   @unique
+  refreshToken String?
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  orders Order[]
+}
+
+
+model Courier {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  phone    String
+  cpf      String @unique
+  refreshToken String? // Adicionado refreshToken
+  
+  isOnline  Boolean @default(false)
+  latitude  Float?
+  longitude Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  storeId    String // <-- CORRIGIDO AQUI: storeId agora é String
+  courierId  String?
+  status     String   @default("pending")
+  totalPrice Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tenantId   String
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  store   Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  courier Courier? @relation(fields: [courierId], references: [id])
+}
+
+model Tenant {
+  id          String     @id @default(uuid())
+  name        String
+  createdAt   DateTime   @default(now())
+  plan        TenantPlan @default(BASIC)
+  isActive    Boolean    @default(true)
+  nextBilling DateTime?
+  lastPayment DateTime?
+
+  stores Store[]
+  orders Order[]
+}
