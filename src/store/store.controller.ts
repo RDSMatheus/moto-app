@@ -66,7 +66,6 @@ export class StoreController {
       },
     },
   })
-  @UseGuards(AuthGuard)
   @ApiResponse({ status: 201, description: 'Loja criada com sucesso.' })
   async createStore(@Body() data: CreateStoreDto) {
     const store = await this.storeService.createStore(data);

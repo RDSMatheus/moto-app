@@ -37,7 +37,7 @@ Crie um arquivo `.env` na raiz do projeto com as variáveis usadas pelo código:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/motoboy_app?schema=public"
 JWT_SECRET="sua_chave_secreta_jwt"
-SALT_ROUNDS=10
+SALT_ROUNDS=12
 PORT=3000
 ```
 

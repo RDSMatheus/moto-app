@@ -10,6 +10,10 @@ export const updateCourierDto = z.object({
   phone: z.string().min(1, 'O telefone é obrigatório').optional(),
   password: z.string().min(6).optional(),
   cpf: z.string().min(11).optional(),
+  refreshToken: z.string().optional(),
+  isOnline: z.boolean().default(false).optional(),
+  latitude: z.number().default(0).optional(),
+  longitude: z.number().default(0).optional(),
 });
 
 export type UpdateCourierDto = z.infer<typeof updateCourierDto>;

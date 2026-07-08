@@ -50,7 +50,41 @@ export class AuthController {
     return await this.authService.signInStore(body);
   }
 
-  @Post('refresh')
+  @Post('login/courier')
+  @ApiOperation({
+    summary: 'Login do Courier',
+    description: 'Gera tokens de acesso para o courier',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email',
+          example: 'courier@exemplo.com',
+        },
+        password: { type: 'string', example: '123456' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Login realizado com sucesso',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+        refreshToken: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+  async loginCourier(@Body() loginCourier: LoginDto) {
+    return await this.authService.signInCourier(loginCourier);
+  }
+
+  @Post('refresh/store')
   @ApiOperation({
     summary: 'Renovar Token',
     description:
@@ -58,7 +92,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'x-refresh-token',
-    description: 'Refresh token armazenado no banco de dados',
+    description: 'Refresh token enviado no header x-refresh-token',
     required: true,
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
@@ -77,14 +111,48 @@ export class AuthController {
     status: 401,
     description: 'Refresh token inválido ou revogado',
   })
-  async refresh(@Headers('x-refresh-token') refreshToken: string) {
+  async refreshStore(@Headers('x-refresh-token') refreshToken: string) {
     if (!refreshToken) {
       throw new BadRequestException('Refresh token is required in header');
     }
-    return this.authService.refreshAccessToken(refreshToken);
+    return this.authService.refreshAccessTokenStore(refreshToken);
   }
 
-  @Post('logout')
+  @Post('refresh/courier')
+  @ApiOperation({
+    summary: 'Renovar Token do Courier',
+    description:
+      'Utiliza o refresh_token enviado no header para obter um novo access_token do courier',
+  })
+  @ApiHeader({
+    name: 'x-refresh-token',
+    description: 'Refresh token armazenado no banco de dados do courier',
+    required: true,
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens renovados com sucesso',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string' },
+        refreshToken: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token inválido ou revogado',
+  })
+  async refreshCourier(@Headers('x-refresh-token') refreshToken: string) {
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh token is required in header');
+    }
+    return this.authService.refreshAccessTokenCourier(refreshToken);
+  }
+
+  @Post('logout/store')
   @ApiOperation({
     summary: 'Logout',
     description: 'Invalida o refresh_token atual',
@@ -99,11 +167,34 @@ export class AuthController {
     status: 200,
     description: 'Logout realizado com sucesso',
   })
-  async logout(@Headers('x-refresh-token') refreshToken: string) {
+  async logoutStore(@Headers('x-refresh-token') refreshToken: string) {
     if (!refreshToken) {
       throw new BadRequestException('Refresh token is required in header');
     }
-    await this.authService.logout(refreshToken);
+    await this.authService.logoutStore(refreshToken);
+    return { message: 'Logout realizado com sucesso' };
+  }
+
+  @Post('logout/courier')
+  @ApiOperation({
+    summary: 'Logout do Courier',
+    description: 'Invalida o refresh_token atual do courier',
+  })
+  @ApiHeader({
+    name: 'x-refresh-token',
+    description: 'Refresh token atual a ser invalidado do courier',
+    required: true,
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Logout realizado com sucesso',
+  })
+  async logoutCourier(@Headers('x-refresh-token') refreshToken: string) {
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh token is required in header');
+    }
+    await this.authService.logoutCourier(refreshToken);
     return { message: 'Logout realizado com sucesso' };
   }
 }

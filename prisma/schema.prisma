@@ -24,34 +24,65 @@ enum TenantPlan {
   ENTERPRISE
 }
 
+enum StoreCourierStatus {
+  PENDING
+  ACTIVE
+  BLOCKED
+  KICKED
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  IN_ROUTE
+  DELIVERED
+  CANCELLED
+}
+
+model StoreCourier {
+  id        String             @id @default(uuid())
+  storeId   String
+  courierId String
+  status    StoreCourierStatus @default(PENDING)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  store   Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  courier Courier @relation(fields: [courierId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, courierId])
+  @@index([storeId, status])
+  @@index([courierId, status])
+}
+
 model Store {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  email     String   @unique
-  password  String
-  phone     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  address   String
-  tenantId  String?
-  cpfCnpj   String   @unique
+  id           String   @id @default(uuid())
+  name         String   @unique
+  email        String   @unique
+  password     String
+  phone        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  address      String
+  tenantId     String?
+  cpfCnpj      String   @unique
   refreshToken String?
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  orders Order[]
+  orders        Order[]
+  storeCouriers StoreCourier[]
 }
 
-
 model Courier {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-  phone    String
-  cpf      String @unique
-  refreshToken String? // Adicionado refreshToken
-  
+  id           String  @id @default(uuid())
+  name         String
+  email        String  @unique
+  password     String
+  phone        String
+  cpf          String  @unique
+  refreshToken String?
+
   isOnline  Boolean @default(false)
   latitude  Float?
   longitude Float?
@@ -59,17 +90,18 @@ model Courier {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders Order[]
+  orders        Order[]
+  storeCouriers StoreCourier[]
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
-  storeId    String // <-- CORRIGIDO AQUI: storeId agora é String
+  id         Int         @id @default(autoincrement())
+  storeId    String
   courierId  String?
-  status     String   @default("pending")
+  status     OrderStatus @default(PENDING)
   totalPrice Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   tenantId   String
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)

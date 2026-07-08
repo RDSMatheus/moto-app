@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NewStore } from './entity/store.entity';
 import { Prisma, Store, Tenant } from '@prisma/client';
+import { UpdateStoreDto } from './store.service';
 
 @Injectable()
 export class StoreRepository {
@@ -48,10 +49,7 @@ export class StoreRepository {
     });
   }
 
-  async update(
-    id: string,
-    data: Prisma.CourierUncheckedUpdateInput,
-  ): Promise<Store> {
+  async update(id: string, data: UpdateStoreDto): Promise<Store> {
     return await this.prisma.store.update({
       where: { id },
       data,

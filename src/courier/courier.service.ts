@@ -18,6 +18,17 @@ export interface UpdateLocationDto {
   isOnline?: boolean;
 }
 
+export interface UpdateCourier {
+  id: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+  refreshToken?: string;
+  email?: string;
+  password?: string;
+  cpfCpnj?: string;
+}
+
 @Injectable()
 export class CourierService {
   constructor(
@@ -81,7 +92,22 @@ export class CourierService {
     return courier;
   }
 
-  async update(data: UpdateCourierDto): Promise<Courier> {
+  async findByEmail(email: string): Promise<Courier> {
+    try {
+      const courier = await this.courierRepository.findByEmail(email);
+
+      if (!courier) {
+        throw new NotFoundException('Courier not found');
+      }
+      return courier;
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException)
+        throw new NotFoundException('Courier not found');
+      throw new BadRequestException(error);
+    }
+  }
+
+  async update(data: Courier): Promise<Courier> {
     const courier = await this.courierRepository.findById(data.id);
 
     if (!courier) {

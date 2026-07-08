@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import type { UpdateCourierDto } from './dtos/update-courier.dto';
 import { ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import type { Courier } from '@prisma/client';
 
 @ApiTags('Courier')
 @Controller('courier')
@@ -96,7 +97,7 @@ export class CourierController {
       },
     },
   })
-  async update(@Body() data: UpdateCourierDto) {
+  async update(@Body() data: Courier) {
     return this.courierService.update(data);
   }
 

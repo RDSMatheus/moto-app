@@ -18,6 +18,8 @@ export interface UpdateStoreDto {
   phone?: string;
   refreshToken?: string;
   email?: string;
+  password?: string;
+  cpfCpnj?: string;
 }
 
 @Injectable()
