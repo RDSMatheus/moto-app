@@ -126,7 +126,7 @@ export class AuthController {
   })
   @ApiHeader({
     name: 'x-refresh-token',
-    description: 'Refresh token armazenado no banco de dados do courier',
+    description: 'Refresh token enviado no header x-refresh-token',
     required: true,
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
@@ -154,7 +154,7 @@ export class AuthController {
 
   @Post('logout/store')
   @ApiOperation({
-    summary: 'Logout',
+    summary: 'Logout do Store',
     description: 'Invalida o refresh_token atual',
   })
   @ApiHeader({
