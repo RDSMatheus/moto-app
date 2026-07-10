@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CourierService } from './courier.service';
 import type { CreateCourierDto } from './dtos/create-courier.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import type { UpdateCourierDto } from './dtos/update-courier.dto';
 import { ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -47,6 +47,12 @@ export class CourierController {
 
   @Get()
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Listar todos os entregadores.' })
   @ApiResponse({ status: 200, description: 'Lista de entregadores retornada.' })
   async findAll() {
@@ -55,6 +61,12 @@ export class CourierController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Buscar entregador por ID.' })
   @ApiParam({
     name: 'id',
@@ -69,6 +81,12 @@ export class CourierController {
 
   @Patch()
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Atualizar entregador.' })
   @ApiResponse({
     status: 200,
@@ -103,6 +121,12 @@ export class CourierController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Deletar entregador.' })
   @ApiParam({
     name: 'id',

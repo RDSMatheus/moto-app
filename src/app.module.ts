@@ -8,6 +8,7 @@ import { JwtConfigModule } from './common/jwt/jwt-config.module';
 import { CourierModule } from './courier/courier.module';
 import { StoreCourierModule } from './store-courier/store-courier.module';
 import { AuthModule } from './auth/auth.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     CourierModule,
     StoreCourierModule,
     AuthModule,
+    OrderModule,
   ],
   providers: [PrismaService],
 })

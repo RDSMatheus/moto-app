@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiHeader,
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
@@ -38,29 +39,47 @@ export class StoreCourierController {
   })
   @ApiResponse({ status: 201, description: 'Link criado com sucesso.' })
   async create(@Body() data: CreateLinkDto) {
-    return this.storeCourierService.createLink(data);
+    return await this.storeCourierService.createLink(data);
   }
 
   @Get()
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Listar todos os links entre lojas e motobays.' })
   @ApiResponse({ status: 200, description: 'Lista de links retornada.' })
   async findAll() {
-    return this.storeCourierService.findAll();
+    return await this.storeCourierService.findAll();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Buscar link por ID.' })
   @ApiParam({ name: 'id', description: 'ID do link', example: 'uuid-string' })
   @ApiResponse({ status: 200, description: 'Link encontrado.' })
   @ApiResponse({ status: 404, description: 'Link não encontrado.' })
   async findOne(@Param('id') id: string) {
-    return this.storeCourierService.findOne(id);
+    return await this.storeCourierService.findOne(id);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Atualizar link entre loja e motoboy.' })
   @ApiParam({ name: 'id', description: 'ID do link', example: 'uuid-string' })
   @ApiBody({
@@ -84,16 +103,22 @@ export class StoreCourierController {
       status?: StoreCourierStatus;
     },
   ) {
-    return this.storeCourierService.updateLink(id, data);
+    return await this.storeCourierService.updateLink(id, data);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Deletar link entre loja e motoboy.' })
   @ApiParam({ name: 'id', description: 'ID do link', example: 'uuid-string' })
   @ApiResponse({ status: 200, description: 'Link deletado.' })
   @ApiResponse({ status: 404, description: 'Link não encontrado.' })
   async remove(@Param('id') id: string) {
-    return this.storeCourierService.removeLink(id);
+    return await this.storeCourierService.removeLink(id);
   }
 }

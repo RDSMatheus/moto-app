@@ -12,6 +12,7 @@ import type { CreateStoreDto } from './dtos/create-store.dto';
 import { StoreService } from './store.service';
 import {
   ApiBody,
+  ApiHeader,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -74,6 +75,12 @@ export class StoreController {
 
   @Get()
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Listar todas as lojas.' })
   @ApiResponse({ status: 200, description: 'Lista de lojas retornada.' })
   async findAll() {
@@ -82,6 +89,12 @@ export class StoreController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Buscar loja por ID.' })
   @ApiParam({ name: 'id', description: 'ID da loja', example: 'uuid-string' })
   @ApiResponse({ status: 200, description: 'Loja encontrada.' })
@@ -92,6 +105,12 @@ export class StoreController {
 
   @Patch(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Atualizar loja.' })
   @ApiParam({ name: 'id', description: 'ID da loja', example: 'uuid-string' })
   @ApiResponse({ status: 200, description: 'Loja atualizada.' })
@@ -125,6 +144,12 @@ export class StoreController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Refresh token enviado no header authorization',
+    required: true,
+    example: 'Bearer 123456789',
+  })
   @ApiOperation({ summary: 'Deletar loja.' })
   @ApiParam({ name: 'id', description: 'ID da loja', example: 'uuid-string' })
   @ApiResponse({ status: 200, description: 'Loja deletada.' })

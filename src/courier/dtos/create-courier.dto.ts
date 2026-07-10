@@ -9,9 +9,9 @@ export const createCourierDto = z.object({
     .string()
     .min(6, 'A senha deve ter pelo menos 6 caracteres'),
   phone: z.string().min(1, 'O telefone é obrigatório'),
-  isOnline: z.boolean().default(false),
-  latitude: z.number().default(0),
-  longitude: z.number().default(0),
+  isOnline: z.boolean().default(false).optional(),
+  latitude: z.number().default(0).optional(),
+  longitude: z.number().default(0).optional(),
 });
 
 export type CreateCourierDto = z.infer<typeof createCourierDto>;
