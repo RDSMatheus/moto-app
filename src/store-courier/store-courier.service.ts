@@ -7,11 +7,15 @@ import {
 import { StoreCourierRepository } from './store-courier.repository';
 import { CreateLinkDto } from './dtos/create-link.dto';
 import { StoreCourier, StoreCourierStatus } from '@prisma/client';
+import { StoreRepository } from 'src/store/store.repository';
+import { CourierRepository } from 'src/courier/courier.repository';
 
 @Injectable()
 export class StoreCourierService {
   constructor(
     private readonly storeCourierRepository: StoreCourierRepository,
+    private readonly storeRepository: StoreRepository,
+    private readonly courierRepository: CourierRepository,
   ) {}
 
   async createLink(data: CreateLinkDto): Promise<StoreCourier> {
@@ -22,6 +26,15 @@ export class StoreCourierService {
         throw new UnprocessableEntityException('courierId is required');
       if (!storeId)
         throw new UnprocessableEntityException('storeId is required');
+
+      const existingCourier = await this.courierRepository.findById(courierId);
+
+      if (!existingCourier) throw new NotFoundException('Courier not found');
+
+      const existingStore = await this.storeRepository.findById(storeId);
+
+      if (!existingStore)
+        throw new NotFoundException(`Store with id ${storeId} not found`);
 
       const link = await this.storeCourierRepository.createLink({
         storeId: data.storeId,
@@ -41,6 +54,13 @@ export class StoreCourierService {
 
   async findAll(): Promise<StoreCourier[]> {
     return await this.storeCourierRepository.findAll();
+  }
+
+  async findStoreCourier(courierId: string, storeId: string) {
+    return await this.storeCourierRepository.findStoreCourier(
+      courierId,
+      storeId,
+    );
   }
 
   async findOne(id: string): Promise<StoreCourier> {

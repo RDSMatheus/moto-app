@@ -53,7 +53,7 @@ export class AuthService {
     );
 
     const accessToken = await this.jwtService.signAsync(
-      { payload },
+      { payload, role: 'store' },
       { expiresIn: '15m', secret: process.env.JWT_SECRET || 'secret' },
     );
 
@@ -98,7 +98,7 @@ export class AuthService {
     );
 
     const accessToken = await this.jwtService.signAsync(
-      { payload },
+      { payload, role: 'courier' },
       { expiresIn: '15m', secret: process.env.JWT_SECRET || 'secret' },
     );
 
@@ -221,7 +221,7 @@ export class AuthService {
 
       const newAccessToken = await this.jwtService.signAsync(
         { payload },
-        { expiresIn: '15m', secret: process.env.JWT_SECRET || 'secret' },
+        { expiresIn: '5h', secret: process.env.JWT_SECRET || 'secret' },
       );
 
       const newRefreshToken = await this.jwtService.signAsync(

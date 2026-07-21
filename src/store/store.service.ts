@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { CreateStoreDto } from './dtos/create-store.dto';
 import { Store } from '@prisma/client';
 import { NewStore } from './entity/store.entity';
 import { HashService } from 'src/common/hash/hash.service';
+import { GeocodingService } from 'src/geocoding/geocoding.service';
 
 export interface UpdateStoreDto {
   id: string;
@@ -27,19 +29,36 @@ export class StoreService {
   constructor(
     private readonly storeRepository: StoreRepository,
     private readonly hashService: HashService,
+    private readonly geocodingService: GeocodingService,
   ) {}
 
   async createStore(storeData: CreateStoreDto): Promise<Store> {
     try {
       const {
         name,
-        address,
         phone,
         email,
         password,
         confirmPassword,
         cpfCnpj,
+        neighborhood,
+        number,
+        state,
+        complement,
+        street,
+        city,
+        zipCode,
       } = storeData;
+
+      const { latitude, longitude } =
+        await this.geocodingService.geocodeAddress({
+          neighborhood,
+          number,
+          state,
+          city,
+          zipCode,
+          street,
+        });
 
       if (password !== confirmPassword) {
         throw new UnprocessableEntityException('Passwords do not match');
@@ -61,12 +80,20 @@ export class StoreService {
       const hashedPassword = await this.hashService.hash(password);
 
       const newStore: NewStore = {
-        address,
+        neighborhood,
+        number,
+        state,
+        city,
+        zipCode,
+        street,
+        complement,
         name,
         cpfCnpj,
         email,
         password: hashedPassword,
         phone,
+        latitude,
+        longitude,
       };
 
       const { store } =

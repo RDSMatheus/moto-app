@@ -13,12 +13,41 @@ export class OrderRepository {
   }
 
   async findAll(): Promise<Order[]> {
-    return this.prisma.order.findMany();
+    return await this.prisma.order.findMany();
   }
 
   async findOne(id: number): Promise<Order | null> {
-    return this.prisma.order.findUnique({
+    return await this.prisma.order.findFirst({
       where: { id },
+    });
+  }
+
+  async markArrived(orderId: number): Promise<Order> {
+    return await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: 'ARRIVED_AT_STORE', arrivedAt: new Date() },
+    });
+  }
+
+  async updateStatusIfPending(orderId: number, courierId: string) {
+    console.log(orderId);
+    return await this.prisma.order.updateMany({
+      where: {
+        id: orderId,
+        status: 'PENDING',
+      },
+      data: {
+        status: 'ACCEPTED',
+        courierId,
+        acceptedAt: new Date(),
+      },
+    });
+  }
+
+  async inRoute(orderId: number): Promise<Order> {
+    return await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: 'IN_ROUTE', inRouteAt: new Date() },
     });
   }
 
@@ -26,15 +55,22 @@ export class OrderRepository {
     id: number,
     data: Prisma.OrderUncheckedUpdateInput,
   ): Promise<Order> {
-    return this.prisma.order.update({
+    return await this.prisma.order.update({
       where: { id },
       data,
     });
   }
 
   async remove(id: number): Promise<Order> {
-    return this.prisma.order.delete({
+    return await this.prisma.order.delete({
       where: { id },
+    });
+  }
+
+  async delivered(id: number): Promise<Order> {
+    return await this.prisma.order.update({
+      where: { id },
+      data: { status: 'DELIVERED', deliveredAt: new Date() },
     });
   }
 }

@@ -4,6 +4,8 @@ import {
   Post,
   Headers,
   BadRequestException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -46,6 +48,7 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+  @HttpCode(HttpStatus.OK)
   async loginStore(@Body() body: LoginDto) {
     return await this.authService.signInStore(body);
   }
@@ -80,6 +83,7 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+  @HttpCode(HttpStatus.OK)
   async loginCourier(@Body() loginCourier: LoginDto) {
     return await this.authService.signInCourier(loginCourier);
   }
@@ -111,6 +115,7 @@ export class AuthController {
     status: 401,
     description: 'Refresh token inválido ou revogado',
   })
+  @HttpCode(HttpStatus.OK)
   async refreshStore(@Headers('x-refresh-token') refreshToken: string) {
     if (!refreshToken) {
       throw new BadRequestException('Refresh token is required in header');
@@ -145,6 +150,7 @@ export class AuthController {
     status: 401,
     description: 'Refresh token inválido ou revogado',
   })
+  @HttpCode(HttpStatus.OK)
   async refreshCourier(@Headers('x-refresh-token') refreshToken: string) {
     if (!refreshToken) {
       throw new BadRequestException('Refresh token is required in header');

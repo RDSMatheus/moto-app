@@ -34,9 +34,11 @@ enum StoreCourierStatus {
 enum OrderStatus {
   PENDING
   ACCEPTED
-  IN_ROUTE
+  ARRIVED_AT_STORE // motoboy chegou na loja, aguardando confirmar retirada
+  IN_ROUTE // pegou o pedido, está a caminho do cliente
   DELIVERED
   CANCELLED
+  EXPIRED // opcional: distinguir "cancelado pela loja" de "expirou sozinho"
 }
 
 model StoreCourier {
@@ -63,10 +65,18 @@ model Store {
   phone        String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  address      String
+  state        String
+  street       String
+  neighborhood String
+  zipCode      String
+  city         String
+  complement   String?
+  number       String
   tenantId     String?
   cpfCnpj      String   @unique
   refreshToken String?
+  latitude     Float?
+  longitude    Float?
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -103,6 +113,22 @@ model Order {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   tenantId   String
+
+  phone        String
+  state        String
+  street       String
+  neighborhood String
+  zipCode      String
+  city         String
+  complement   String?
+  number       String
+  latitude     Float
+  longitude    Float
+
+  acceptedAt  DateTime?
+  arrivedAt   DateTime?
+  inRouteAt   DateTime?
+  deliveredAt DateTime?
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 

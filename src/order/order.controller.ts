@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Order } from '@prisma/client';
-import type { CreateOrderDto, UpdateOrderDto } from './dtos/order.dto';
+import type { CreateOrderDto } from './dtos/order.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import {
   ApiTags,
@@ -40,8 +40,30 @@ export class OrderController {
       type: 'object',
       properties: {
         storeId: { type: 'string', example: 'uuid-string' },
-        totalPrice: { type: 'number', example: 50.0 },
         tenantId: { type: 'string', example: 'uuid-string' },
+        totalPrice: { type: 'number', example: 50.0 },
+        state: { type: 'string', example: 'ES' },
+        phone: { type: 'string', example: '99 999999999' },
+        street: { type: 'string', example: 'Rua das Flores' },
+        neighborhood: { type: 'string', example: 'Centro' },
+        zipCode: { type: 'string', example: '29010-000' },
+        city: { type: 'string', example: 'Vitória' },
+        complement: { type: 'string', example: 'Apto 101' },
+        number: { type: 'string', example: '123' },
+        courierId: { type: 'string', nullable: true, example: 'uuid-string' },
+        status: {
+          type: 'string',
+          enum: [
+            'PENDING',
+            'ACCEPTED',
+            'ARRIVED_AT_STORE',
+            'IN_ROUTE',
+            'DELIVERED',
+            'CANCELLED',
+            'EXPIRED',
+          ],
+          example: 'PENDING',
+        },
       },
     },
   })
@@ -84,10 +106,22 @@ export class OrderController {
       properties: {
         status: {
           type: 'string',
-          enum: ['PENDING', 'ACCEPTED', 'IN_ROUTE', 'DELIVERED', 'CANCELLED'],
+          enum: [
+            'PENDING',
+            'ACCEPTED',
+            'ARRIVED_AT_STORE',
+            'IN_ROUTE',
+            'DELIVERED',
+            'CANCELLED',
+            'EXPIRED',
+          ],
           example: 'ACCEPTED',
         },
         courierId: { type: 'string', nullable: true, example: 'uuid-string' },
+        totalPrice: { type: 'number', example: 50.0 },
+        // Atualização de endereço também é suportada se necessário
+        state: { type: 'string', example: 'ES' },
+        street: { type: 'string', example: 'Rua Atualizada' },
       },
     },
   })
@@ -95,7 +129,7 @@ export class OrderController {
   @ApiResponse({ status: 404, description: 'Ordem não encontrada' })
   async update(
     @Param('id') id: number,
-    @Body() data: UpdateOrderDto,
+    @Body() data: CreateOrderDto,
   ): Promise<Order> {
     return await this.orderService.update(id, data);
   }

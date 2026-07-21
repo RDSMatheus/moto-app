@@ -9,6 +9,9 @@ import { CourierModule } from './courier/courier.module';
 import { StoreCourierModule } from './store-courier/store-courier.module';
 import { AuthModule } from './auth/auth.module';
 import { OrderModule } from './order/order.module';
+import { EventModule } from './event/event.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { GeocodingModule } from './geocoding/geocoding.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { OrderModule } from './order/order.module';
     StoreCourierModule,
     AuthModule,
     OrderModule,
+    EventModule,
+    EventEmitterModule.forRoot(),
+    GeocodingModule,
   ],
   providers: [PrismaService],
 })

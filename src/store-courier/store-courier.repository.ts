@@ -24,6 +24,17 @@ export class StoreCourierRepository {
     });
   }
 
+  async findStoreCourier(
+    courierId: string,
+    storeId: string,
+  ): Promise<StoreCourier | null> {
+    const link = await this.prisma.storeCourier.findUnique({
+      where: { storeId_courierId: { courierId: courierId, storeId: storeId } },
+    });
+
+    return link;
+  }
+
   async updateLink(
     id: string,
     data: Prisma.StoreCourierUncheckedUpdateInput,

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Courier, Prisma } from '@prisma/client';
+import { CourierUncheckedUpdateInput } from 'generated/prisma/models';
 
 export interface UpdateCourierLocationInput {
   id: string;
@@ -37,8 +38,11 @@ export class CourierRepository {
     });
   }
 
-  async updateLocation(data: UpdateCourierLocationInput): Promise<Courier> {
-    const { id, latitude, longitude, isOnline } = data;
+  async updateLocation(
+    id: string,
+    data: CourierUncheckedUpdateInput,
+  ): Promise<Courier> {
+    const { latitude, longitude, isOnline } = data;
 
     return await this.prisma.courier.update({
       where: { id },

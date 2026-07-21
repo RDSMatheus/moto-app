@@ -92,6 +92,40 @@ export class CourierService {
     return courier;
   }
 
+  async updateLocation({
+    courierId,
+    latitude,
+    longitude,
+  }: {
+    courierId: string;
+    latitude: number;
+    longitude: number;
+  }): Promise<Courier> {
+    try {
+      const courier = await this.courierRepository.findById(courierId);
+
+      if (!courier) throw new NotFoundException('Courier not found');
+
+      const updatedCourier = await this.courierRepository.updateLocation(
+        courierId,
+        {
+          ...courier,
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+        },
+      );
+      return updatedCourier;
+    } catch (error) {
+      if (error instanceof UnprocessableEntityException) {
+        throw error;
+      }
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao atualizar o entregador');
+    }
+  }
+
   async findByEmail(email: string): Promise<Courier> {
     try {
       const courier = await this.courierRepository.findByEmail(email);

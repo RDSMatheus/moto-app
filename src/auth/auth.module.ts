@@ -5,11 +5,12 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { StoreModule } from 'src/store/store.module';
 import { HashModule } from 'src/common/hash/hash.module';
 import { CourierModule } from 'src/courier/courier.module';
+import { OrderModule } from 'src/order/order.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtService],
-  imports: [JwtModule, StoreModule, HashModule, CourierModule],
+  imports: [JwtModule, StoreModule, HashModule, CourierModule, OrderModule],
   exports: [AuthService],
 })
 export class AuthModule {}

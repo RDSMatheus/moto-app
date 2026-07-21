@@ -43,9 +43,37 @@ export class StoreController {
           type: 'string',
           example: '27999999999',
         },
-        address: {
+        number: {
           type: 'string',
-          example: 'Rua A, 123',
+          example: '40',
+        },
+        complement: {
+          type: 'string',
+          example: 'Apto 1',
+        },
+        neighborhood: {
+          type: 'string',
+          example: 'Centro',
+        },
+        street: {
+          type: 'string',
+          example: 'Avenida Expedito Garcia',
+        },
+        city: {
+          type: 'string',
+          example: 'Cariacica',
+        },
+        state: {
+          type: 'string',
+          example: 'ES',
+        },
+        zipCode: {
+          type: 'string',
+          example: '29146-200',
+        },
+        country: {
+          type: 'string',
+          example: 'Brasil',
         },
         cpfCnpj: {
           type: 'string',
